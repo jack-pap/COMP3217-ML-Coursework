@@ -2,8 +2,6 @@ import matplotlib.pyplot as plt
 import pandas as pd
 import numpy as np
 from sklearn.model_selection import train_test_split
-
-from sklearn.svm import SVC
 from sklearn.ensemble import RandomForestClassifier
 
 from sklearn.preprocessing import StandardScaler
@@ -46,8 +44,12 @@ X_test = testData.values
 X_test = scaler.transform(X_test)
 y_pred_test = model.predict(X_test)
 
-#get confusion matrix
+# Get confusion matrix
 cm = confusion_matrix(Y_testing, predictions, labels=model.classes_)
 disp = ConfusionMatrixDisplay(confusion_matrix=cm, display_labels=model.classes_)
 disp.plot(cmap=plt.cm.PuBu)
 plt.show()
+
+# Output test label predictions to csv file
+testData['LabelPred'] = y_pred_test
+testData.to_csv('TestingResultsBinary.csv', index=False)
