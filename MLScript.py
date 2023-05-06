@@ -24,10 +24,10 @@ scaler = StandardScaler()
 X_training = scaler.fit_transform(X_training)
 
 # Splits data into training and validation 80% / 20% 
-X_training, X_validation, Y_training, Y_validation = train_test_split(X_training, Y_training, test_size=0.16)
+X_training, X_validation, Y_training, Y_validation = train_test_split(X_training, Y_training, test_size=0.3)
 
-# Train a random forest classifier model on the training data
-model = RandomForestClassifier() # 0.98 - 0.99 
+# Train a random forest classifier model on the training data with a max tree depth for L1 regularization
+model = RandomForestClassifier(max_depth=12) # 0.98 - 0.99 
 #model = KNeighborsClassifier() # 0.90 - 0.94
 #model = DecisionTreeClassifier() # 0.96- 0.98
 model.fit(X_training, Y_training)
