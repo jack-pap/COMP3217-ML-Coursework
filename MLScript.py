@@ -23,7 +23,7 @@ print (Y_training.shape)
 scaler = StandardScaler()
 X_training = scaler.fit_transform(X_training)
 
-# Splits data into training and validation 80% / 20% 
+# Splits data into training and validation 70% / 30% 
 X_training, X_validation, Y_training, Y_validation = train_test_split(X_training, Y_training, test_size=0.3)
 
 # Train a random forest classifier model on the training data with a max tree depth for L1 regularization
@@ -67,9 +67,17 @@ y_pred_test = model.predict(X_test)
 # Output precision recall curve for training data
 precision, recall, thresholds = precision_recall_curve(Y_training, Y_trainPredictions)
 plt.plot(recall, precision, color='r')
-plt.xlabel('Recall')
-plt.ylabel('Precision')
-plt.title('Precision-Recall Curve')
+plt.xlabel('Training Recall')
+plt.ylabel('Training Precision')
+plt.title('Training Precision-Recall Curve')
+plt.show()
+
+# Output precision recall curve for validation data
+precision, recall, thresholds = precision_recall_curve(Y_validation, Y_predictions)
+plt.plot(recall, precision, color='b')
+plt.xlabel('Validation Recall')
+plt.ylabel('Validation Precision')
+plt.title('Validation Precision-Recall Curve')
 plt.show()
 
 # Get confusion matrix for training data
@@ -85,5 +93,5 @@ disp.plot(cmap=plt.cm.PuBu)
 plt.show()
 
 # Output test label predictions to csv file
-testData['LabelPred'] = y_pred_test
+testData['LabelPrediction'] = y_pred_test
 testData.to_csv('TestingResultsBinary.csv', index=False)
