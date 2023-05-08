@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, f1_score, precision_score, recall_score
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, f1_score, precision_score, precision_recall_curve, recall_score, accuracy_score, mean_squared_error
 
 # Loads in training and testing data
 trainData = pd.read_csv("TrainingDataMulti.csv")  
@@ -23,8 +23,8 @@ print (Y_training.shape)
 scaler = StandardScaler()
 X_training = scaler.fit_transform(X_training)
 
-# Splits data into training and validation 70% / 30% 
-X_training, X_validation, Y_training, Y_validation = train_test_split(X_training, Y_training, test_size=0.3)
+# Splits data into training and validation 80% / 20% 
+X_training, X_validation, Y_training, Y_validation = train_test_split(X_training, Y_training, test_size=0.2)
 
 # Train a random forest classifier model on the training data with a max tree depth for L1 regularization
 model = RandomForestClassifier(max_depth=12) # 0.95 - 0.96
@@ -34,27 +34,37 @@ model.fit(X_training, Y_training)
 
 # Evaluate the model on the training data set
 Y_trainPredictions = model.predict(X_training)
-accuracy = np.mean(Y_trainPredictions == Y_training)
-f1 = f1_score(Y_trainPredictions, Y_training, average='micro')
-precision = precision_score(Y_trainPredictions, Y_training, average='micro')
-recall = recall_score(Y_trainPredictions, Y_training, average='micro')
+trainAccuracy = accuracy_score(Y_trainPredictions,Y_training)
+trainF1 = f1_score(Y_trainPredictions, Y_training, average='micro')
+trainPrecision = precision_score(Y_trainPredictions, Y_training, average='micro')
+trainRecall = recall_score(Y_trainPredictions, Y_training, average='micro')
 
-print("Training accuracy:", accuracy)
-print ("Training F1 Score:", f1)
-print("Training Precision:", precision)
-print("Training Recall:", recall)
+# Calculate the training error during the training process
+train_loss = mean_squared_error(Y_training, Y_trainPredictions)
+
+print("Training accuracy:", trainAccuracy)
+print ("Training F1 Score:", trainF1)
+print("Training Precision:", trainPrecision)
+print("Training Recall:", trainRecall)
+
+print("Train Error:", train_loss)
 
 # Evaluate the model on the validation data set
 Y_predictions = model.predict(X_validation)
-accuracy = np.mean(Y_predictions == Y_validation)
-f1 = f1_score(Y_validation, Y_predictions, average='micro')
-precision = precision_score(Y_validation, Y_predictions, average='micro')
-recall = recall_score(Y_validation, Y_predictions, average='micro')
+validAccuracy = np.mean(Y_predictions == Y_validation)
+validF1 = f1_score(Y_validation, Y_predictions, average='micro')
+validPrecision = precision_score(Y_validation, Y_predictions, average='micro')
+validRecall = recall_score(Y_validation, Y_predictions, average='micro')
 
-print("\nValidation accuracy:", accuracy)
-print ("Validation F1 Score:", f1)
-print("Validation Precision:", precision)
-print("Validation Recall:", recall)
+# Calculate the training error during the training process
+valid_loss = mean_squared_error(Y_validation, Y_predictions)
+
+print("\nValidation accuracy:", validAccuracy)
+print ("Validation F1 Score:", validF1)
+print("Validation Precision:", validPrecision)
+print("Validation Recall:", validRecall)
+
+print("Validation Error:", valid_loss)
 
 # Normalize testing data using a scaler
 X_test = testData.values

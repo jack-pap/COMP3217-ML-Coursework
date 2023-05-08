@@ -6,7 +6,7 @@ from sklearn.ensemble import RandomForestClassifier
 from sklearn.neighbors import KNeighborsClassifier
 from sklearn.tree import DecisionTreeClassifier
 from sklearn.preprocessing import StandardScaler
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, f1_score, precision_score, precision_recall_curve, recall_score, accuracy_score
+from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay, f1_score, precision_score, precision_recall_curve, recall_score, accuracy_score, mean_squared_error
 
 # Loads in training and testing data
 trainData = pd.read_csv("TrainingDataBinary.csv")  
@@ -34,27 +34,38 @@ model.fit(X_training, Y_training)
 
 # Evaluate the model on the training data set
 Y_trainPredictions = model.predict(X_training)
-accuracy = np.mean(Y_trainPredictions == Y_training)
-f1 = f1_score(Y_trainPredictions, Y_training)
-precision = precision_score(Y_trainPredictions, Y_training)
-recall = recall_score(Y_trainPredictions, Y_training)
+trainAccuracy = accuracy_score(Y_trainPredictions,Y_training)
+trainF1 = f1_score(Y_trainPredictions, Y_training)
+trainPrecision = precision_score(Y_trainPredictions, Y_training)
+trainRecall = recall_score(Y_trainPredictions, Y_training)
 
-print("Training accuracy:", accuracy)
-print ("Training F1 Score:", f1)
-print("Training Precision:", precision)
-print("Training Recall:", recall)
+# Calculate the training error during the training process
+train_loss = mean_squared_error(Y_training, Y_trainPredictions)
+
+print("Training accuracy:", trainAccuracy)
+print ("Training F1 Score:", trainF1)
+print("Training Precision:", trainPrecision)
+print("Training Recall:", trainRecall)
+
+print("Train Error:", train_loss)
 
 # Evaluate the model on the validation data set
 Y_predictions = model.predict(X_validation)
-accuracy = np.mean(Y_predictions == Y_validation)
-f1 = f1_score(Y_validation, Y_predictions)
-precision = precision_score(Y_validation, Y_predictions)
-recall = recall_score(Y_validation, Y_predictions)
+validAccuracy = np.mean(Y_predictions == Y_validation)
+validF1 = f1_score(Y_validation, Y_predictions)
+validPrecision = precision_score(Y_validation, Y_predictions)
+validRecall = recall_score(Y_validation, Y_predictions)
 
-print("\nValidation accuracy:", accuracy)
-print ("Validation F1 Score:", f1)
-print("Validation Precision:", precision)
-print("Validation Recall:", recall)
+# Calculate the training error during the training process
+valid_loss = mean_squared_error(Y_validation, Y_predictions)
+
+print("\nValidation accuracy:", validAccuracy)
+print ("Validation F1 Score:", validF1)
+print("Validation Precision:", validPrecision)
+print("Validation Recall:", validRecall)
+
+print("Validation Error:", valid_loss)
+
 
 # Splits the testing data into features and then normalizes it 
 X_test = testData.values
